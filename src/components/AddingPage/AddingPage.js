@@ -25,6 +25,10 @@ function AddingPage(props)
             props.addTracker(nameInput, 0, maxInput);
             props.toggleAdding();
         }
+        else
+        {
+            console.log('Bad Input');
+        }
     }
 
     return(

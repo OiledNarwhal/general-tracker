@@ -1,4 +1,5 @@
 import Tracker from "./Tracker";
+import TrackerFolder from "./TrackerFolder";
 import AddingPage from "../AddingPage/AddingPage";
 import {DndProvider} from 'react-dnd'
 import {HTML5Backend} from 'react-dnd-html5-backend'
@@ -9,7 +10,14 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 function TrackerPage() 
 {
-    const [testTrackers, setTestTrackers] = useState([{name: 'one', id: 0, counter: 2, max: 10}, {name: 'two', id: 1, counter: 3, max: 4}, {name: 'three', id: 2, counter: 0, max: 0}]);
+    const [testTrackers, setTestTrackers] = useState([
+        {name: 'one', id: 0, counter: 2, max: 10, folder: false}, 
+        {name: 'two', id: 1, counter: 3, max: 4, folder: false}, 
+        {name: 'three', id: 2, counter: 0, max: 0, folder: false},
+        {name: 'folderTest', id: 3, counter: 0, max: 0, folder: true, trackers: [
+            {name: 'inside Folder', id: 4, counter: 0, max: 0, folder: false}, 
+            {name: 'inside Folder 2', id: 5, counter: 0, max: 15, folder: false}]}
+    ]);
     const [adding, setAdding] = useState(false);
 
     //A button to move the specific tracker up one slot.
@@ -50,6 +58,12 @@ function TrackerPage()
             setTestTrackers(updatedTrackers);
         }
     }
+    function updateFolderList(index, trackerList)
+    {
+        let updatedTrackers = [...testTrackers];
+        testTrackers[index].trackers = trackerList;
+        setTestTrackers(updatedTrackers)
+    }
 
     function toggleAdding()
     {
@@ -61,7 +75,7 @@ function TrackerPage()
             Tracker properties:
             {name: 'one', id: 1, counter: 2, max: 10}
         */
-        let tracker = {name: trackerName, id: testTrackers.length, counter: counter, max: max};
+        let tracker = {name: trackerName, id: Math.random(), counter: counter, max: max};
         setTestTrackers([...testTrackers, tracker]);
     }
 
@@ -69,9 +83,13 @@ function TrackerPage()
         <DndProvider backend={HTML5Backend}>
             {!adding && <div>
             <div>
-                {testTrackers.map((item, index) => (
-                    <Tracker key={"trackers " + item.id} item={item} index={index} moveUpHandler={moveUp} moveDownHandler={moveDown}/>
-                ))}
+                {testTrackers.map((item, index) => {
+                    return(item.folder === true ?
+                        <TrackerFolder key={"trackers " + item.id} item={item} index={index} moveUpHandler={moveUp} moveDownHandler={moveDown} updateInnerList={updateFolderList}/>
+                        :
+                        <Tracker key={"trackers " + item.id} item={item} index={index} moveUpHandler={moveUp} moveDownHandler={moveDown}/>
+                    )
+                })}
             </div>
             <div>
                 <Card className="shadow mb-1 bg-primary rounded m-3">
