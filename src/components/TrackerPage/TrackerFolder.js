@@ -2,15 +2,17 @@ import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import React, { useState } from 'react';
 import Tracker from './Tracker';
+import AddingPageFolder from '../AddingPage/AddingPageFolder';
 
 
 function TrackerFolder(props)
 {
     const [expand, setExpand] = useState(false);
     const [trackerList, setTrackerList] = useState(props.item.trackers);
+    const [folderAdding, setFolderAdding] = useState(false);
+
 
     function expandHandler()
     {
@@ -24,6 +26,22 @@ function TrackerFolder(props)
     function moveDownHandler()
     {
         props.moveDownHandler(props.index);
+    }
+    function addingHandler()
+    {
+        setFolderAdding(!folderAdding);
+    }
+
+    function addTracker(trackerName, counter, max)
+    {
+        /*
+            Tracker properties:
+            {name: 'one', id: 1, counter: 2, max: 10}
+        */
+        let tracker = {name: trackerName, id: Math.random(), counter: counter, max: max, folder: false};
+        let updatedTrackerList = [...trackerList, tracker]
+        setTrackerList(updatedTrackerList);
+        props.updateInnerList(props.index, updatedTrackerList);
     }
 
     function moveUp(currIndex)
@@ -69,7 +87,7 @@ function TrackerFolder(props)
 
     return(
         <div>
-            <Card className="shadow p-3 mb-1 bg-body rounded m-3">
+            {!folderAdding && <Card className="shadow p-3 mb-1 bg-body rounded m-3">
             <Card.Body>
                 <Row>
                     <Col>
@@ -84,16 +102,26 @@ function TrackerFolder(props)
                     </Col>
                 </Row>
                 {expand && 
-                    <Row>
-                        <Col className="ml-3">
-                            {props.item.trackers.map((item, index) => {
-                                return (<Tracker key={"trackers " + item.id} item={item} index={index} moveUpHandler={moveUp} moveDownHandler={moveDown}/>)
-                            })}
-                        </Col>
-                    </Row>
+                    <div>
+                        <Row>
+                            <Col className="ml-3">
+                                {props.item.trackers.map((item, index) => {
+                                    return (<Tracker key={"trackers " + item.id} item={item} index={index} moveUpHandler={moveUp} moveDownHandler={moveDown}/>)
+                                })}
+                            </Col>
+                        </Row>
+                        <Row className="justify-content-md-center">
+                            <Col md="auto">
+                                <Button className="m-3" variant="primary" onClick={addingHandler}>+</Button>
+                            </Col>
+                        </Row>
+                    </div>
                 }
             </Card.Body>
-        </Card>
+        </Card>}
+        {folderAdding && <div>
+                <AddingPageFolder toggleAdding={addingHandler} addTracker={addTracker}></AddingPageFolder>
+            </div>}
         </div>
     );
 }

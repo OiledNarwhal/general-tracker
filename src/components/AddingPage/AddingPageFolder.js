@@ -4,11 +4,10 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { useState } from "react";
 
-function AddingPage(props) 
+function AddingPageFolder(props) 
 {
     const [nameInput, setNameInput] = useState("");
     const [maxInput, setMaxInput] = useState(0);
-    const [isFolder, setIsFolder] = useState(false);
 
     function nameChangeHandler(event) 
     {
@@ -19,16 +18,12 @@ function AddingPage(props)
     {
         setMaxInput(event.target.value);
     }
-    function folderChangeHandler(event) 
-    {
-        setIsFolder(!isFolder);
-    }
 
     function addTrackerHandler()
     {
         if(nameInput !== "")
         {
-            props.addTracker(nameInput, 0, maxInput, isFolder);
+            props.addTracker(nameInput, 0, maxInput);
             props.toggleAdding();
         }
         else
@@ -49,12 +44,8 @@ function AddingPage(props)
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="formTrackerMax">
                             <Form.Label>{'Max Value'}</Form.Label>
-                            {!isFolder && <Form.Control type="number" onChange={maxChangeHandler}/>}
-                            {isFolder && <Form.Control type="number" onChange={maxChangeHandler} disabled/>}
-                            <Form.Text className="text-muted">{'Input 0 for a tracker without a maximum bound' + (isFolder ? " (Unnecessary for Tracker Folders)" : "")}</Form.Text>
-                        </Form.Group>
-                        <Form.Group>
-                            <Form.Check type="switch" id="folder-switch" label="Tracker Folder?" onChange={folderChangeHandler}/>
+                            <Form.Control type="number" onChange={maxChangeHandler}/>
+                            <Form.Text className="text-muted">{'Input 0 for a tracker without a maximum bound'}</Form.Text>
                         </Form.Group>
                     </Form>
                 </Col>
@@ -69,4 +60,4 @@ function AddingPage(props)
     );
 }
 
-export default AddingPage;
+export default AddingPageFolder;

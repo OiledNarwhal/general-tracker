@@ -69,13 +69,17 @@ function TrackerPage()
     {
         setAdding(!adding);
     }
-    function addTracker(trackerName, counter, max)
+    function addTracker(trackerName, counter, max, isFolder)
     {
         /*
             Tracker properties:
             {name: 'one', id: 1, counter: 2, max: 10}
         */
-        let tracker = {name: trackerName, id: Math.random(), counter: counter, max: max};
+        let tracker = {name: trackerName, id: Math.random(), counter: counter, max: max, folder: isFolder};
+        if(isFolder)
+        {
+            tracker = {...tracker, trackers: []}
+        }
         setTestTrackers([...testTrackers, tracker]);
     }
 
